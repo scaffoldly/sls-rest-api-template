@@ -33,101 +33,14 @@ provider:
     ServiceStage: ${opt:stage, "local"}
 
 functions:
-  # Login/Auth Functions
-  authorize-E-v1:
+  joke-R-v1:
     role: arn:${env:AWS_PARTITION}:iam::${env:AWS_ACCOUNT_ID}:role/${self:service}-${opt:stage, "local"}
-    handler: src/index.authorizeV1
-  login-certs-R-v1:
-    role: arn:${env:AWS_PARTITION}:iam::${env:AWS_ACCOUNT_ID}:role/${self:service}-${opt:stage, "local"}
-    handler: src/index.getLoginCertsV1
+    handler: src/index.getJokeV1
     events:
       - http:
-          path: api/v1/login/certs
+          path: api/v1/joke
           method: get
           cors: true
-  login-O-v1:
-    role: arn:${env:AWS_PARTITION}:iam::${env:AWS_ACCOUNT_ID}:role/${self:service}-${opt:stage, "local"}
-    handler: src/index.loginOptionsV1
-    events:
-      - http:
-          path: api/v1/login
-          method: options
-      - http:
-          path: api/v1/login/refresh
-          method: options
-  login-R-v1:
-    role: arn:${env:AWS_PARTITION}:iam::${env:AWS_ACCOUNT_ID}:role/${self:service}-${opt:stage, "local"}
-    handler: src/index.getLoginsV1
-    events:
-      - http:
-          path: api/v1/login
-          method: get
-          cors: true
-          authorizer: authorize-E-v1
-  login-C-v1:
-    role: arn:${env:AWS_PARTITION}:iam::${env:AWS_ACCOUNT_ID}:role/${self:service}-${opt:stage, "local"}
-    handler: src/index.createLoginV1
-    events:
-      - http:
-          path: api/v1/login
-          method: post
-          response:
-            headers:
-              Set-Cookie: "'integration.response.body.cookie'"
-            template: $input.path('$')
-  login-D-v1:
-    role: arn:${env:AWS_PARTITION}:iam::${env:AWS_ACCOUNT_ID}:role/${self:service}-${opt:stage, "local"}
-    handler: src/index.deleteLoginV1
-    events:
-      - http:
-          path: api/v1/login
-          method: delete
-          authorizer: authorize-E-v1
-          response:
-            headers:
-              Set-Cookie: "'integration.response.body.cookie'"
-            template: $input.path('$')
-  login-refresh-C-v1:
-    role: arn:${env:AWS_PARTITION}:iam::${env:AWS_ACCOUNT_ID}:role/${self:service}-${opt:stage, "local"}
-    handler: src/index.refreshLoginV1
-    events:
-      - http:
-          path: api/v1/login/refresh
-          method: post
-          response:
-            headers:
-              Set-Cookie: "'integration.response.body.cookie'"
-            template: $input.path('$')
-
-  # Account Functions
-  account-C-v1:
-    role: arn:${env:AWS_PARTITION}:iam::${env:AWS_ACCOUNT_ID}:role/${self:service}-${opt:stage, "local"}
-    handler: src/index.createAccountV1
-    events:
-      - http:
-          path: api/v1
-          method: post
-          cors: true
-  account-U-v1:
-    role: arn:${env:AWS_PARTITION}:iam::${env:AWS_ACCOUNT_ID}:role/${self:service}-${opt:stage, "local"}
-    handler: src/index.updateAccountV1
-    events:
-      - http:
-          path: api/v1
-          method: patch
-          cors: true
-          authorizer:
-            name: authorize-E-v1
-            resultTtlInSeconds: 0
-  account-R-v1:
-    role: arn:${env:AWS_PARTITION}:iam::${env:AWS_ACCOUNT_ID}:role/${self:service}-${opt:stage, "local"}
-    handler: src/index.getAccountV1
-    events:
-      - http:
-          path: api/v1
-          method: get
-          cors: true
-          authorizer: authorize-E-v1
 
 resources:
   Resources:
