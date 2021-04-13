@@ -30,6 +30,7 @@ const table = new Table(
 );
 
 // TODO: Demonstrate DynamoDB Stream events
+// TODO: Demonstrate accessing another service in the org
 
 export const createSampleV1 = async (
   event: AuthorizedEvent,
