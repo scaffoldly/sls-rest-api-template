@@ -2,9 +2,10 @@
   "name": "api",
   "version": "0.1.0",
   "scripts": {
-    "prepare": "./node_modules/.bin/serverless dynamodb install",
-    "start": "export SLS_DEBUG=* && ./node_modules/.bin/serverless offline start",
-    "debug": "export SLS_DEBUG=* && node --inspect=127.0.0.1:5858 ./node_modules/.bin/serverless offline start"
+    "serverless": "SLS_DEBUG=* serverless",
+    "prepare": "yarn serverless dynamodb install",
+    "start": "yarn serverless offline start",
+    "deploy": "yarn serverless deploy"
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.72",
@@ -34,7 +35,9 @@
     "typescript": "^4.2.3"
   },
   "dependencies": {
-    "@scaffoldly/serverless-util": "^2.0.11",
-    "dotenv": "^8.2.0"
+    "@scaffoldly/serverless-util": "^2.0.19",
+    "boolean": "^3.0.3",
+    "dotenv": "^8.2.0",
+    "ulid": "^2.3.0"
   }
 }
