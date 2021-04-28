@@ -33,7 +33,7 @@ functions:
   # Public (no auth endpoint)
   version-R-v1:
     role: arn:${env:AWS_PARTITION}:iam::${env:AWS_ACCOUNT_ID}:role/${self:service}-${opt:stage, "local"}
-    handler: src/index.getVersionV1
+    handler: src/index.getVersion
     events:
       - http:
           path: version
