@@ -1462,10 +1462,10 @@
   resolved "https://registry.yarnpkg.com/@protobufjs/utf8/-/utf8-1.1.0.tgz#a777360b5b39a1a2e5106f8e858f2fd2d060c570"
   integrity sha1-p3c2C1s5oaLlEG+OhY8v0tBgxXA=
 
-"@scaffoldly/serverless-util@^2.0.19":
-  version "2.0.19"
-  resolved "https://registry.yarnpkg.com/@scaffoldly/serverless-util/-/serverless-util-2.0.19.tgz#e829e4e684770c67332f3c9311f637be81b355ec"
-  integrity sha512-sg8gWrEmHVvTPUf4Dw6IPxiYUmFKAml+/UnakCinZp8UOlb0Qit7WWu9AM4B0Y/374wXyg+TBYsH+UyIFkd8EQ==
+"@scaffoldly/serverless-util@^2.0.25":
+  version "2.0.25"
+  resolved "https://registry.yarnpkg.com/@scaffoldly/serverless-util/-/serverless-util-2.0.25.tgz#692b5da7f78e18b27e218f429db73c5953671060"
+  integrity sha512-GLri0WbdUaRxB62NjOY1qaE5WqT2oK+GtKv550tMCG6B+Zj0T5QeOIce/6wGBq1k9/70338P1kqviwIcknhfbg==
   dependencies:
     "@types/aws-lambda" "^8.10.72"
     "@types/dynamodb" "^1.2.2"
