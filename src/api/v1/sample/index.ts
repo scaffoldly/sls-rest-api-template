@@ -31,6 +31,7 @@ const table = new Table(
 
 // TODO: Demonstrate DynamoDB Stream events
 // TODO: Demonstrate accessing another service in the org
+// TODO: Secrets Example
 
 export const createSampleV1 = async (
   event: AuthorizedEvent,
