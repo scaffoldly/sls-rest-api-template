@@ -48,9 +48,6 @@ functions:
           path: api/v1/sample
           method: post
           cors: true
-          authorizer:
-            name: ${self:service}-${opt:stage, "local"}-authorizer-v1
-            arn: !ImportValue ${opt:stage, "local"}-sly-auth-api-authorize-v1-arn
   sample-R-v1: # 'R' === 'read' (HTTP GET)
     role: arn:${env:AWS_PARTITION}:iam::${env:AWS_ACCOUNT_ID}:role/${self:service}-${opt:stage, "local"}
     handler: src/api/v1/sample/index.readSampleV1
@@ -59,10 +56,6 @@ functions:
           path: api/v1/sample/{sk}
           method: get
           cors: true
-          authorizer:
-            name: ${self:service}-${opt:stage, "local"}-authorizer-v1
-            arn: !ImportValue ${opt:stage, "local"}-sly-auth-api-authorize-v1-arn
-            resultTtlInSeconds: 0 # Set to 0 when caching is disabled in API Gateway and there is a path parameter
   sample-U-v1: # 'U' === 'update' (HTTP PATCH)
     role: arn:${env:AWS_PARTITION}:iam::${env:AWS_ACCOUNT_ID}:role/${self:service}-${opt:stage, "local"}
     handler: src/api/v1/sample/index.updateSampleV1
@@ -71,10 +64,6 @@ functions:
           path: api/v1/sample/{sk}
           method: patch
           cors: true
-          authorizer:
-            name: ${self:service}-${opt:stage, "local"}-authorizer-v1
-            arn: !ImportValue ${opt:stage, "local"}-sly-auth-api-authorize-v1-arn
-            resultTtlInSeconds: 0 # Set to 0 when caching is disabled in API Gateway and there is a path parameter
   sample-D-v1: # 'D' === 'delete' (HTTP DELETE)
     role: arn:${env:AWS_PARTITION}:iam::${env:AWS_ACCOUNT_ID}:role/${self:service}-${opt:stage, "local"}
     handler: src/api/v1/sample/index.deleteSampleV1
@@ -83,10 +72,6 @@ functions:
           path: api/v1/sample/{sk}
           method: delete
           cors: true
-          authorizer:
-            name: ${self:service}-${opt:stage, "local"}-authorizer-v1
-            arn: !ImportValue ${opt:stage, "local"}-sly-auth-api-authorize-v1-arn
-            resultTtlInSeconds: 0 # Set to 0 when caching is disabled in API Gateway and there is a path parameter
 
 resources:
   Resources:
