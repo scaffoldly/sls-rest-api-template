@@ -30,77 +30,38 @@ provider:
     ServiceStage: ${opt:stage, "local"}
 
 functions:
-  # Public (no auth endpoint)
-  version-R-v1:
+  lambda-handler:
     role: arn:${env:AWS_PARTITION}:iam::${env:AWS_ACCOUNT_ID}:role/${self:service}-${opt:stage, "local"}
-    handler: src/index.getVersion
+    handler: src/lambda.handler
+    timeout: 30
     events:
       - http:
-          path: version
-          method: get
-
-  # Protected (via Authorizer)
-  sample-C-v1: # 'C' === 'create' (HTTP POST)
-    role: arn:${env:AWS_PARTITION}:iam::${env:AWS_ACCOUNT_ID}:role/${self:service}-${opt:stage, "local"}
-    handler: src/api/v1/sample/index.createSampleV1
-    events:
+          path: /
+          method: any
       - http:
-          path: api/v1/sample
-          method: post
-          cors: true
-          authorizer:
-            name: ${self:service}-${opt:stage, "local"}-authorizer-v1
-            arn: !ImportValue ${opt:stage, "local"}-sly-auth-api-authorize-v1-arn
-  sample-R-v1: # 'R' === 'read' (HTTP GET)
-    role: arn:${env:AWS_PARTITION}:iam::${env:AWS_ACCOUNT_ID}:role/${self:service}-${opt:stage, "local"}
-    handler: src/api/v1/sample/index.readSampleV1
-    events:
+          path: /
+          method: options
       - http:
-          path: api/v1/sample/{sk}
-          method: get
-          cors: true
-          authorizer:
-            name: ${self:service}-${opt:stage, "local"}-authorizer-v1
-            arn: !ImportValue ${opt:stage, "local"}-sly-auth-api-authorize-v1-arn
-            resultTtlInSeconds: 0 # Set to 0 when caching is disabled in API Gateway and there is a path parameter
-  sample-U-v1: # 'U' === 'update' (HTTP PATCH)
-    role: arn:${env:AWS_PARTITION}:iam::${env:AWS_ACCOUNT_ID}:role/${self:service}-${opt:stage, "local"}
-    handler: src/api/v1/sample/index.updateSampleV1
-    events:
+          path: /{proxy+}
+          method: any
       - http:
-          path: api/v1/sample/{sk}
-          method: patch
-          cors: true
-          authorizer:
-            name: ${self:service}-${opt:stage, "local"}-authorizer-v1
-            arn: !ImportValue ${opt:stage, "local"}-sly-auth-api-authorize-v1-arn
-            resultTtlInSeconds: 0 # Set to 0 when caching is disabled in API Gateway and there is a path parameter
-  sample-D-v1: # 'D' === 'delete' (HTTP DELETE)
-    role: arn:${env:AWS_PARTITION}:iam::${env:AWS_ACCOUNT_ID}:role/${self:service}-${opt:stage, "local"}
-    handler: src/api/v1/sample/index.deleteSampleV1
-    events:
-      - http:
-          path: api/v1/sample/{sk}
-          method: delete
-          cors: true
-          authorizer:
-            name: ${self:service}-${opt:stage, "local"}-authorizer-v1
-            arn: !ImportValue ${opt:stage, "local"}-sly-auth-api-authorize-v1-arn
-            resultTtlInSeconds: 0 # Set to 0 when caching is disabled in API Gateway and there is a path parameter
+          path: /{proxy+}
+          method: options
 
 resources:
   Resources:
     Table:
       Type: AWS::DynamoDB::Table
+      DeletionPolicy: Retain
       Properties:
-        TableName: ${opt:stage, "local"}-${self:service}
+        TableName: ${opt:stage, "local"}-${self:service}-table
         KeySchema:
-          - AttributeName: id
+          - AttributeName: pk
             KeyType: HASH
           - AttributeName: sk
             KeyType: RANGE
         AttributeDefinitions:
-          - AttributeName: id
+          - AttributeName: pk
             AttributeType: S
           - AttributeName: sk
             AttributeType: S
@@ -108,9 +69,6 @@ resources:
           StreamViewType: NEW_IMAGE
         PointInTimeRecoverySpecification:
           PointInTimeRecoveryEnabled: true
-        TimeToLiveSpecification:
-          AttributeName: expires
-          Enabled: true
         SSESpecification:
           SSEEnabled: true
         BillingMode: PAY_PER_REQUEST
@@ -122,15 +80,13 @@ custom:
     prefix: ${file(serverless.config.js):serviceName}
   bundle:
     packager: yarn
-    copyFiles:
-      - from: './.scaffoldly/${opt:stage, "local"}'
-        to: './.scaffoldly'
+    externals:
+      - tsoa
   serverless-configuration:
     local:
       del:
         - provider.apiGateway.restApiId
         - provider.apiGateway.restApiRootResourceId
-        - custom.bundle.copyFiles
   dynamodb:
     stages:
       - local
