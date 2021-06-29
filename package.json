@@ -1,6 +1,6 @@
 {
   "name": "api",
-  "version": "1.13.0",
+  "version": "1.14.0",
   "license": "UNLICENSED",
   "scripts": {
     "prepare": "yarn dotenv && yarn types && yarn tsoa && yarn dynamodb && yarn openapi && yarn build",
@@ -17,7 +17,7 @@
   },
   "devDependencies": {
     "@ngx-rocket/scripts": "^5.1.0",
-    "@scaffoldly/openapi-generator": "^1.0.12",
+    "@scaffoldly/openapi-generator": "^1.0.13",
     "@types/aws-lambda": "^8.10.72",
     "@types/dotenv": "^8.2.0",
     "@types/express": "^4.17.11",
