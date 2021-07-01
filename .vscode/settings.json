@@ -6,17 +6,17 @@
   "filewatcher.commands": [
     {
       "match": "src/(controllers|interfaces|models/interfaces|services)/(.*).ts",
-      "cmd": "cd ${workspaceRoot} && yarn openapi",
+      "cmd": "cd ${workspaceRoot} && yarn tsoa",
       "event": "onFileChange"
     },
     {
       "match": "src/models/schemas/(.*).ts",
-      "cmd": "cd ${workspaceRoot} && yarn types && yarn openapi",
+      "cmd": "cd ${workspaceRoot} && yarn types && yarn tsoa",
       "event": "onFileChange"
     }
   ],
   "typescript.preferences.importModuleSpecifier": "relative",
   "[html]": {
     "editor.defaultFormatter": "vscode.html-language-features"
-  },
+  }
 }
