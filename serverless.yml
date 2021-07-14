@@ -13,13 +13,13 @@ plugins:
 provider:
   name: aws
   runtime: nodejs12.x
-  cfnRole: arn:${env:AWS_PARTITION}:iam::${env:AWS_ACCOUNT_ID}:role/${self:service}-cloudformation
+  cfnRole: arn:${env:AWS_PARTITION,''}:iam::${env:AWS_ACCOUNT_ID,''}:role/${self:service}-cloudformation
   stage: ${opt:stage, "local"}
   apiKeys:
     - ${self:service}-${opt:stage, "local"}
   apiGateway:
-    restApiId: ${env:AWS_REST_API_ID}
-    restApiRootResourceId: ${env:AWS_REST_API_ROOT_RESOURCE_ID}
+    restApiId: ${env:AWS_REST_API_ID,''}
+    restApiRootResourceId: ${env:AWS_REST_API_ROOT_RESOURCE_ID,''}
   tracing:
     lambda: true
   environment:
@@ -31,7 +31,7 @@ provider:
 
 functions:
   lambda-handler:
-    role: arn:${env:AWS_PARTITION}:iam::${env:AWS_ACCOUNT_ID}:role/${self:service}-${opt:stage, "local"}
+    role: arn:${env:AWS_PARTITION,''}:iam::${env:AWS_ACCOUNT_ID,''}:role/${self:service}-${opt:stage, "local"}
     handler: src/lambda.handler
     timeout: 30
     events:
@@ -47,6 +47,23 @@ functions:
       - http:
           path: /{proxy+}
           method: options
+  dynamodb-event-handler:
+    role: arn:${env:AWS_PARTITION, ""}:iam::${env:AWS_ACCOUNT_ID, ""}:role/${self:service}-${opt:stage, "local"}
+    handler: src/lambda.dynamoDbEventHandler
+    timeout: 30
+    events:
+      - stream:
+          type: dynamodb
+          arn:
+            Fn::GetAtt: [Table, StreamArn]
+  sns-event-handler:
+    role: arn:${env:AWS_PARTITION, ""}:iam::${env:AWS_ACCOUNT_ID, ""}:role/${self:service}-${opt:stage, "local"}
+    handler: src/lambda.snsEventHandler
+    timeout: 30
+    events:
+      - sns:
+          topicName: ${opt:stage, "local"}-${self:service}-topic
+          displayName: ${opt:stage, "local"}-${self:service}-topic
 
 resources:
   Resources:
@@ -82,6 +99,7 @@ custom:
     packager: yarn
     externals:
       - tsoa
+      - aws-lambda
   serverless-configuration:
     local:
       del:

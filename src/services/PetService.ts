@@ -1,4 +1,5 @@
-import { DecodedJwtPayload, HttpError } from '@scaffoldly/serverless-util';
+import { DecodedJwtPayload, HttpError, TypedDynamoDBRecord } from '@scaffoldly/serverless-util';
+import { SNSEventRecord } from 'aws-lambda';
 import { ulid } from 'ulid';
 import { CreatePetRequest, UpdatePetRequest } from '../interfaces/requests';
 import { ListResponse, PetResponse } from '../interfaces/responses';
@@ -98,5 +99,18 @@ export class PetService {
     }
 
     result = await this.petModel.model.destroy(id, 'pet');
+  };
+
+  public handlPetDBEventRecords = async (records: TypedDynamoDBRecord<any>[]): Promise<void> => {
+    console.log(
+      `Received ${records.length} record(s) from DynamoDB:`,
+      JSON.stringify(records, null, 2),
+    );
+    // Handle INSERT/MODIFY/REMOVE events if you so choose
+  };
+
+  public handlPetMessageRecords = async (records: SNSEventRecord[]): Promise<void> => {
+    console.log(`Received ${records.length} record(s) from SNS:`, JSON.stringify(records, null, 2));
+    // Handle SNS Messages if you so choose
   };
 }
